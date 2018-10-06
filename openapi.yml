@@ -1,0 +1,153 @@
+openapi: 3.0.0
+info:
+  title: TODO List service API
+  description: CloudScene interview tests
+  version: 1.0.0
+servers:
+  - url: "http://localhost:8080"
+    description: Development server
+paths:
+  /todo:
+    get:
+      summary: Get list of todo tasks
+      operationId: listTodos
+      responses:
+        '200':
+          description: Array of todo tasks         
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Todos"
+        default:
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Error"
+    post:
+      summary: Create a new todo task
+      operationId: addTodo
+      requestBody:
+        description: Add todo task to the list
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTodoRequest'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /todo/{id}:
+    put:
+      summary: Update todo task
+      operationId: updateTodo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the todo task to update
+          schema:
+            type: string
+      requestBody:
+        description: Update todo task to the list
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTodoRequest'
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Todo'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a specific todo task
+      operationId: deleteTodo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the todo task to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Todo:
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        completed:
+          type: boolean
+        executionOrder:
+          type: integer
+          format: int32
+    Todos:
+      type: array
+      items:
+        $ref: "#/components/schemas/Todo"
+    CreateTodoRequest:
+      required:
+        - title
+      properties:
+        title:
+          type: string
+        completed:
+          type: boolean
+        executionOrder:
+          type: integer
+          format: int32
+    UpdateTodoRequest:
+      required:
+        - title
+      properties:
+        title:
+          type: string
+        completed:
+          type: boolean
+        executionOrder:
+          type: integer
+          format: int32
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  
