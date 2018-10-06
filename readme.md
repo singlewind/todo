@@ -1,6 +1,8 @@
 # Journal
 This is my first experience of developing Laravel with PHP. Instead of using Laravel Homestead, I will try run the envrionment with docker tools to not *pollute* my dev machine with VM. The following commands is run in windows. Mac and Linux users may need change sytax a little bit. 
 
+## To Run
+
 ## Start from scratch
 1. Initialize a repo
 2. Copy laravel 5.7 [download](https://github.com/laravel/laravel/releases/tag/v5.7.0)

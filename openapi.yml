@@ -110,9 +110,6 @@ components:
           type: string
         completed:
           type: boolean
-        executionOrder:
-          type: integer
-          format: int32
     Todos:
       type: array
       items:
@@ -125,9 +122,6 @@ components:
           type: string
         completed:
           type: boolean
-        executionOrder:
-          type: integer
-          format: int32
     UpdateTodoRequest:
       required:
         - title
@@ -136,9 +130,6 @@ components:
           type: string
         completed:
           type: boolean
-        executionOrder:
-          type: integer
-          format: int32
     Error:
       required:
         - code
