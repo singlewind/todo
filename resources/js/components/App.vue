@@ -11,7 +11,9 @@
             <textarea ref="newTodoBox" v-model="newTodo" id="icon_prefix2" class="materialize-textarea"></textarea>
             <label for="icon_prefix2">What to do?</label>
           </div>
-          <button class="btn waves-effect col s12">{{ btn }}</button>
+          <button v-if="edit" class="btn col s5">SAVE</button>
+          <button v-if="edit" type="button" @click.prevent="cancelEdit" class="btn col s5 offset-s2">CANCEL</button>
+          <button v-else class="btn waves-effect col s12">ADD</button>
         </form>
       </div>
       <div class="row">
@@ -48,8 +50,7 @@ export default {
   data() {
     return {
       todos: [],
-      newTodo: '',
-      btn: 'ADD',
+      newTodo: ''
     };
   },
   mounted() {
@@ -64,17 +65,16 @@ export default {
     submitTodo() {
       let vm = this;
 
-      if(vm.btn == "SAVE" && vm.edit) {
+      if(vm.edit) {
         axios.put('/api/todo/' + vm.edit.id, { "title": this.newTodo, "completed": vm.edit.completed }).then(function (response) {        
           let updated = response.data.data;
           vm.edit.title = updated.title;
           vm.edit = null;
-          vm.btn = "ADD";
           vm.newTodo = '';
         }).catch(function (error) {
           console.log(error)
         })        
-      } else if(vm.btn == "ADD") {
+      } else {
         axios.post('/api/todo', { "title": this.newTodo }).then(function (response) {        
           vm.todos.push(response.data.data);
           vm.newTodo = '';
@@ -83,10 +83,13 @@ export default {
         })
       }
     },
+    cancelEdit() {
+      this.newTodo = null;
+      this.edit = null;
+    },
     editTodo(todo) { 
       this.newTodo = todo.title;
       this.edit = todo;
-      this.btn = "SAVE";
       this.$refs.newTodoBox.focus();      
     },
     toggleTodo(todo) {      
