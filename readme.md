@@ -2,6 +2,10 @@
 This is my first experience of developing Laravel with PHP. Instead of using Laravel Homestead, I will try run the envrionment with docker tools to not *pollute* my dev machine with VM. The following commands is run in windows. Mac and Linux users may need change sytax a little bit. 
 
 ## To Run
+docker-compose exec app ./vendor/bin/phpunit --filter TaskTest
+docker-compose exec app php artisan migrate
+docker-compose exec app php artisan db:seed --class=SampleTasksSeeder
+
 
 ## Start from scratch
 1. Initialize a repo

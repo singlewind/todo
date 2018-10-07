@@ -6,4 +6,4 @@ FROM builder
 RUN apt-get install -y --no-install-recommends \
     apt-utils \ 
     mysql-client \
-    && docker-php-ext-install pdo_mysql
+    && docker-php-ext-install pdo_mysql 
