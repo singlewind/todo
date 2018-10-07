@@ -8,22 +8,28 @@
         <form @submit.prevent="submitTodo" class="col s6 offset-s3">
           <div class="input-field">
             <i class="material-icons prefix">list</i>
-            <textarea v-model="newTodo" id="icon_prefix2" class="materialize-textarea"></textarea>
+            <textarea ref="newTodoBox" v-model="newTodo" id="icon_prefix2" class="materialize-textarea"></textarea>
             <label for="icon_prefix2">What to do?</label>
           </div>
-          <button class="btn waves-effect col s12">Add</button>
+          <button class="btn waves-effect col s12">{{ btn }}</button>
         </form>
       </div>
       <div class="row">
         <ul class="collection col s6 offset-s3">
-          <li class="collection-item" v-for="todo in todos" :key="todo.id">
-            <p>
+          <li class="collection-item" v-for="todo in todos" :key="todo.id">            
+            <p v-if="todo.editing">
+              <textarea v-model="todo.title" class="materialize-textarea" ></textarea>
+            </p>
+            <p v-else>
               <label>
-                <input type="checkbox" :checked=todo.completed @change="toggleTodo(todo)" />
+                <input type="checkbox" :checked=todo.completed @change="toggleTodo(todo)" />              
                 <span>{{todo.title}}</span>
-                <span>
+                <span>                  
                   <a @click.prevent="deleteTodo(todo)">
                     <i class="material-icons right teal-text">delete</i>
+                  </a>
+                  <a @click.prevent="editTodo(todo)">
+                    <i class="material-icons right teal-text">edit</i>
                   </a>
                 </span>
               </label>
@@ -43,6 +49,7 @@ export default {
     return {
       todos: [],
       newTodo: '',
+      btn: 'ADD',
     };
   },
   mounted() {
@@ -56,12 +63,31 @@ export default {
   methods: {
     submitTodo() {
       let vm = this;
-      axios.post('/api/todo', { "title": this.newTodo }).then(function (response) {        
-        vm.todos.push(response.data.data);
-        vm.newTodo = '';
-      }).catch(function (error) {
-        console.log(error)
-      })      
+
+      if(vm.btn == "SAVE" && vm.edit) {
+        axios.put('/api/todo/' + vm.edit.id, { "title": this.newTodo, "completed": vm.edit.completed }).then(function (response) {        
+          let updated = response.data.data;
+          vm.edit.title = updated.title;
+          vm.edit = null;
+          vm.btn = "ADD";
+          vm.newTodo = '';
+        }).catch(function (error) {
+          console.log(error)
+        })        
+      } else if(vm.btn == "ADD") {
+        axios.post('/api/todo', { "title": this.newTodo }).then(function (response) {        
+          vm.todos.push(response.data.data);
+          vm.newTodo = '';
+        }).catch(function (error) {
+          console.log(error)
+        })
+      }
+    },
+    editTodo(todo) { 
+      this.newTodo = todo.title;
+      this.edit = todo;
+      this.btn = "SAVE";
+      this.$refs.newTodoBox.focus();      
     },
     toggleTodo(todo) {      
       todo.completed = !todo.completed
@@ -89,5 +115,8 @@ export default {
 <style lang="scss">
 .header{
   margin-top: 100px;
+}
+.edit {
+  display: none;
 }
 </style>
