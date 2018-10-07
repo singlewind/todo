@@ -4,7 +4,7 @@ info:
   description: CloudScene interview tests
   version: 1.0.0
 servers:
-  - url: "http://localhost:8080"
+  - url: "http://localhost:8080/api"
     description: Development server
 paths:
   /todo:
@@ -99,10 +99,11 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Todo:
+    Task:
       required:
         - id
         - title
+        - completed
       properties:
         id:
           type: string
@@ -110,10 +111,20 @@ components:
           type: string
         completed:
           type: boolean
+    Todo:
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/Task"        
     Todos:
-      type: array
-      items:
-        $ref: "#/components/schemas/Todo"
+      required:
+        - data
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Task"
     CreateTodoRequest:
       required:
         - title
@@ -125,6 +136,7 @@ components:
     UpdateTodoRequest:
       required:
         - title
+        - completed
       properties:
         title:
           type: string
@@ -132,12 +144,11 @@ components:
           type: boolean
     Error:
       required:
-        - code
+        - exception
         - message
       properties:
-        code:
-          type: integer
-          format: int32
+        exception:
+          type: string
         message:
           type: string
 
